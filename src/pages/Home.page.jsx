@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import NewsItem from "./NewsItem";
-import Loading from "./Loading";
+import NewsItem from "../components/NewsItem";
+import Loading from "../components/Loading";
 import PropTypes from "prop-types";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { NewsUrl } from "../url";
+const NEWS_ORG_API_URL =  NewsUrl.NEWS_ORG_URL;
 
-const News = (props) => {
+const Home = (props) => {
+  const {searchKeyword} = props;
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -14,9 +17,9 @@ const News = (props) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
-  const updateNews = async () => {
+  const initalLoad = async () => {
     props.setProgress(10);
-    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pagesize=${props.pagesize}`;
+    const url = `${NEWS_ORG_API_URL}?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pagesize=${props.pagesize}`;
     setLoading(true);
     props.setProgress(30);
     let data = await fetch(url);
@@ -30,12 +33,12 @@ const News = (props) => {
 
   useEffect(() => {
     document.title = `${capitalizeFirstLetter(props.category)} - NewsHub`;
-    updateNews();
+    initalLoad();
   }, []);
 
   const fetchMoreData = async () => {
     setPage(page + 1);
-    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page + 1}&pagesize=${props.pagesize}`;
+    const url = `${NEWS_ORG_API_URL}?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page + 1}&pagesize=${props.pagesize}`;
     let data = await fetch(url);
     let parsedData = await data.json();
     setArticles(articles.concat(parsedData.articles));
@@ -50,8 +53,8 @@ const News = (props) => {
       <InfiniteScroll dataLength={articles.length} next={fetchMoreData} hasMore={articles.length !== totalResults} loader={<Loading />}>
         <div className="container">
           <div className="row">
-            {articles.map((element, index) => {
-              if(element.urlToImage != null) {
+            {articles.filter((article)=>{}).map((element, index) => {
+               if(element.urlToImage != null) {
                 return (
                   <div className="col-md-4" key={index}>
                     <NewsItem title={element.title} description={element.description} imgUrl={element.urlToImage} url={element.url} author={element.author} publishedAt={element.publishedAt} name={element.source.name} />
@@ -66,15 +69,15 @@ const News = (props) => {
   );
 };
 
-News.defaultProps = {
+Home.defaultProps = {
   country: "in",
   pagesize: 5,
   category: "genereal",
 };
-News.propTypes = {
+Home.propTypes = {
   country: PropTypes.string,
   pagesize: PropTypes.number,
   category: PropTypes.string,
 };
 
-export default News;
+export default Home;

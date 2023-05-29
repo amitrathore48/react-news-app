@@ -1,5 +1,3 @@
-import React from "react";
-
 const NewsItem = (props) => {
   let { title, description, url, imgUrl, author, publishedAt, name } = props;
   return (
@@ -16,7 +14,8 @@ const NewsItem = (props) => {
           </a>
           <p className="card-text">
             <small className="text-muted">
-              By {!author ? "Unknown" : author} updated at {new Date(publishedAt).toGMTString()}
+              By {!author ? "Unknown" : author} updated at{" "}
+              {new Date(publishedAt).toGMTString()}
             </small>
           </p>
         </div>
