@@ -53,7 +53,7 @@ const Home = (props) => {
       <InfiniteScroll dataLength={articles.length} next={fetchMoreData} hasMore={articles.length !== totalResults} loader={<Loading />}>
         <div className="container">
           <div className="row">
-            {articles.filter((article)=>{}).map((element, index) => {
+            {articles.map((element, index) => {
                if(element.urlToImage != null) {
                 return (
                   <div className="col-md-4" key={index}>
