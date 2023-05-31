@@ -52,7 +52,6 @@ const Home = (props) => {
     setArticles(articles.concat(parsedData.articles));
     setTotalResults(parsedData.totalResults);
   };
-  console.log("saearching log", searchKeyword);
   return (
     <div>
     <h1 className="text-center" style={{ marginTop: "90px" }}>
