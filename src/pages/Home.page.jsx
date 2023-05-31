@@ -36,6 +36,14 @@ const Home = (props) => {
     initalLoad();
   }, []);
 
+  useEffect(() => {
+    const filteredArticles = articles.filter((article) =>
+      article.title.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+    setArticles(filteredArticles);
+    console.log("filteredArticles", filteredArticles);
+  }, [searchKeyword]);
+
   const fetchMoreData = async () => {
     setPage(page + 1);
     const url = `${NEWS_ORG_API_URL}?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page + 1}&pagesize=${props.pagesize}`;
@@ -44,28 +52,42 @@ const Home = (props) => {
     setArticles(articles.concat(parsedData.articles));
     setTotalResults(parsedData.totalResults);
   };
+  console.log("saearching log", searchKeyword);
   return (
     <div>
-      <h1 className="text-center" style={{ marginTop: "90px" }}>
-        NewsHub - Top Headlines - {capitalizeFirstLetter(props.category)}
-      </h1>
-      {loading && <Loading />}
-      <InfiniteScroll dataLength={articles.length} next={fetchMoreData} hasMore={articles.length !== totalResults} loader={<Loading />}>
-        <div className="container">
-          <div className="row">
-            {articles.map((element, index) => {
-               if(element.urlToImage != null) {
-                return (
-                  <div className="col-md-4" key={index}>
-                    <NewsItem title={element.title} description={element.description} imgUrl={element.urlToImage} url={element.url} author={element.author} publishedAt={element.publishedAt} name={element.source.name} />
-                  </div>
-                );
+    <h1 className="text-center" style={{ marginTop: "90px" }}>
+      NewsHub - Top Headlines - {capitalizeFirstLetter(props.category)}
+    </h1>
+    {loading && <Loading />}
+    <InfiniteScroll
+      dataLength={articles.length}
+      next={fetchMoreData}
+      hasMore={articles.length !== totalResults}
+      loader={<Loading />}
+    >
+      <div className="container">
+        <div className="row">
+          {articles.map((element, index) => {
+            if (element.urlToImage != null) {
+              return (
+                <div className="col-md-4" key={index}>
+                  <NewsItem
+                    title={element.title}
+                    description={element.description}
+                    imgUrl={element.urlToImage}
+                    url={element.url}
+                    author={element.author}
+                    publishedAt={element.publishedAt}
+                    name={element.source.name}
+                  />
+                </div>
+              );
             }
-            })}
-          </div>
+          })}
         </div>
-      </InfiniteScroll>
-    </div>
+      </div>
+    </InfiniteScroll>
+  </div>
   );
 };
 
